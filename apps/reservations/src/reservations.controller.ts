@@ -3,7 +3,7 @@ import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 
-@Controller()
+@Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
@@ -18,7 +18,7 @@ export class ReservationsController {
   }
 
   @Get(':id')
-  findOne(@Body() id: string) {
+  findOne(@Param('id') id: string) {
     return this.reservationsService.findOne(id);
   }
 

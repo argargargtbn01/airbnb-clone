@@ -10,13 +10,14 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   async create(document: Omit<TDocument, '_id'>): Promise<TDocument> {
     const createdDocument = new this.model({
       ...document,
-      id: new Types.ObjectId(),
+      _id: new Types.ObjectId(),
     });
     return (await createdDocument.save()).toJSON() as TDocument;
   }
 
   async findOne(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
     const document = await this.model.findOne(filterQuery, {}, { lean: true });
+    console.log(document);
     if (!document) {
       this.logger.warn('Document not found with filterQuery', filterQuery);
       throw new NotFoundException('Document not found');
@@ -44,6 +45,6 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   }
 
   async findOneAndDelete(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
-    return this.model.findOneAndDelete(filterQuery, { lean: true }) as Promise<TDocument>;
+    return this.model.findOneAndDelete(filterQuery).lean<TDocument>(true);
   }
 }

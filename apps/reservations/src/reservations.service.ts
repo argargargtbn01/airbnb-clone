@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ReservationsRepository } from './reservations.repository';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
+import { ReservationDocument } from './models/reservation.schema';
 
 @Injectable()
 export class ReservationsService {
@@ -18,7 +19,7 @@ export class ReservationsService {
     return this.reservationsRepository.find({});
   }
 
-  findOne(_id: string) {
+  findOne(_id: string): Promise<ReservationDocument> {
     return this.reservationsRepository.findOne({ _id });
   }
 
