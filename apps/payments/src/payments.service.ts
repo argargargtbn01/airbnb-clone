@@ -12,14 +12,12 @@ export class PaymentsService {
 
   async createCharge({ card, amount }: CreateChargeDto) {
     const paymentIntent = await this.stripe.paymentIntents.create({
+      payment_method: 'pm_card_visa',
       amount: amount * 100,
-      confirm: true,
+      // confirm: true,
       currency: 'usd',
-      payment_method:'pm_card_visa',
-      automatic_payment_methods: { // not accept payments have redirection
-        enabled: true,
-        allow_redirects: 'never',
-      },
     });
+
+    return paymentIntent
   }
 }
