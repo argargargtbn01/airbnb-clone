@@ -3,11 +3,14 @@ FROM node:alpine As development
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY tsconfig.json tsconfig.json
 
 RUN npm install
 
-COPY . .
+COPY apps/notifications apps/notifications
+COPY libs libs
 
+RUN cd apps/notifications && npm install
 RUN npm run build
 
 FROM node:alpine As production

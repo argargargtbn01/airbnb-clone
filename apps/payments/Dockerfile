@@ -2,12 +2,15 @@ FROM node:alpine As development
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json ./
+COPY tsconfig.json tsconfig.json
 
 RUN npm install
 
-COPY . .
+COPY apps/payments apps/payments
+COPY libs libs
 
+RUN cd apps/payments && npm install
 RUN npm run build
 
 FROM node:alpine As production
