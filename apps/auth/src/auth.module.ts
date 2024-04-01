@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { FirebaseStrategy } from './strategies/firebase.strategy';
 @Module({
   imports: [
     UsersModule,
@@ -20,7 +21,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         JWT_EXPIRATION: Joi.string().required(),
         HTTP_PORT: Joi.number().required(),
         TCP_PORT: Joi.number().required(),
-      })
+      }),
+      envFilePath:'.env' //.env outside :D
     }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
@@ -31,6 +33,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, FirebaseStrategy],
 })
 export class AuthModule {}

@@ -1,24 +1,22 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserDocument } from './users/models/users.schema';
-import { Response } from 'express';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from '@app/common';
+import { FirebaseAuthGuard } from './guards/firebase-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(FirebaseAuthGuard)
   @Post('login')
-  async login(@CurrentUser() user: UserDocument, @Res({ passthrough: true }) response: Response) {
-    await this.authService.login(user, response); 
-    response.send(user);
+  async login(@CurrentUser() user: UserDocument) {
+    return await this.authService.login(user); 
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
+  @UseGuards(FirebaseAuthGuard)
   @MessagePattern('authenticate')
   async authenticate(@Payload() data){
     return data.user

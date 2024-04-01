@@ -5,6 +5,8 @@ import { Logger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser'
 import { Transport } from '@nestjs/microservices';
+import * as firebaseAdmin from 'firebase-admin';
+import { firebaseParams } from './firebase';
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
   const configService = app.get(ConfigService);
@@ -17,5 +19,8 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   await app.startAllMicroservices()
   await app.listen(configService.get('HTTP_PORT'));
+  const firebaseApp = firebaseAdmin.initializeApp({
+    credential: firebaseAdmin.credential.cert(firebaseParams),
+  });
 }
 bootstrap();
