@@ -1,4 +1,10 @@
-import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway()
@@ -6,8 +12,8 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  onModuleInit(){}
-  
+  onModuleInit() {}
+
   // @SubscribeMessage('message1')
   // handleMessage(client: any, payload: any): string {
   //   this.server.emit('a',{a:'b'})
@@ -15,22 +21,29 @@ export class ChatGateway {
   // }
 
   @SubscribeMessage('createRoom')
-  handleCreateRoom(client: Socket, room: string): void {
-    room='1'
-    client.join(room);
-    client.emit('roomCreated', room);
+  handleCreateRoom(@MessageBody() body, @ConnectedSocket() client: Socket): void {
+    console.log(body)
+    // client.join(room);
+    // client.emit('roomCreated', room);
   }
+
+  // @SubscribeMessage('createRoom')
+  // handleCreateRoom(client: Socket, room: string): void {
+  //   room='1'
+  //   client.join(room);
+  //   client.emit('roomCreated', room);
+  // }
 
   @SubscribeMessage('joinRoom')
   handleJoinRoom(client: Socket, room: string): void {
-    room='1'
+    room = '1';
 
     client.join(room);
     client.emit('roomJoined', room);
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: { room: string, message: string }): void {
-    this.server.to('1').emit("message",payload.message);
+  handleMessage(client: Socket, payload: { room: string; message: string }): void {
+    this.server.to('1').emit('message', payload.message);
   }
 }
