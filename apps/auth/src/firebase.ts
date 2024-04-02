@@ -1,4 +1,4 @@
-import * as firebaseAccountService from '../firebaseServiceAccount.json';
+import * as firebaseAccountService from '../firebaseServiceAccount.json'
 
 export const firebaseParams = {
   type: firebaseAccountService.type,

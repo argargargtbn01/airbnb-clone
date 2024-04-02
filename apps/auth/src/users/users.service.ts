@@ -1,26 +1,29 @@
-import { Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
 import * as brcrypt from 'bcryptjs';
-import { GetUserDto } from './dto/get-user.dto';
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
-  async create(createUserDto: CreateUserDto) {
-    await this.validateCreateUserDto(createUserDto);
-    return this.usersRepository.create({
-      ...createUserDto,
-      password: await brcrypt.hash(createUserDto.password, 10),
-    });
-  }
+  // async create(createUserDto: CreateUserDto) {
+  //   await this.validateCreateUserDto(createUserDto);
+  //   return this.usersRepository.create({
+  //     ...createUserDto,
+  //     password: await brcrypt.hash(createUserDto.password, 10),
+  //   });
+  // }
 
-  private async validateCreateUserDto(createUserDto: CreateUserDto) {
-    try {
-      await this.usersRepository.findOne({email : createUserDto.email});
-    } catch (error) {
-      return;
+  async create(createUserDto: CreateUserDto) {
+    const uid = createUserDto.uid;
+    const user = await this.usersRepository.findOne({
+      where: {
+        uid,
+      },
+    });
+    if (user) {
+      throw new BadRequestException('User already exists');
     }
-    throw new UnprocessableEntityException('Email already exists');
+    return await this.usersRepository.create(createUserDto);
   }
 
   async verifyUser(email: string, password: string) {
@@ -31,7 +34,11 @@ export class UsersService {
     throw new UnauthorizedException('Credentials are not valid');
   }
 
-  async getUser(getUserDto: GetUserDto){
-    return this.usersRepository.findOne(getUserDto);
-  }
+  async getUserById(id: string){
+    return this.usersRepository.findOne({_id: id});
+}
+
+async getUserByUid(uid: string){
+    return this.usersRepository.findOne({uid: uid});
+}
 }

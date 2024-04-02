@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserDocument } from './users/models/users.schema';
 import { MessagePattern, Payload } from '@nestjs/microservices';
@@ -10,9 +10,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(FirebaseAuthGuard)
-  @Post('login')
-  async login(@CurrentUser() user: UserDocument) {
-    return await this.authService.login(user); 
+  @Get('authenticate')
+  async authen(@CurrentUser() user: UserDocument) {
+    return await this.authService.authenticate(user); 
   }
 
   // @UseGuards(JwtAuthGuard)

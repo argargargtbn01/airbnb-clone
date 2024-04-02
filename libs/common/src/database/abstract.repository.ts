@@ -7,7 +7,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
   constructor(protected readonly model: Model<TDocument>) {}
 
-  async create(document: Omit<TDocument, '_id'>): Promise<TDocument> {
+  async create(document: Omit<TDocument, '_id' | 'password'>): Promise<TDocument> {
     const createdDocument = new this.model({
       ...document,
       _id: new Types.ObjectId(),
@@ -19,8 +19,9 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     const document = await this.model.findOne(filterQuery, {}, { lean: true });
     console.log(document);
     if (!document) {
-      this.logger.warn('Document not found with filterQuery', filterQuery);
-      throw new NotFoundException('Document not found');
+      // this.logger.warn('Document not found with filterQuery', filterQuery);
+      // throw new NotFoundException('Document not found');
+      return null;
     }
     return document as TDocument;
   }
