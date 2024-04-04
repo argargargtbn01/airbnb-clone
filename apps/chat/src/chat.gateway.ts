@@ -13,24 +13,21 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  onModuleInit(client:Socket, ...args: any[]) {
-    console.log('dcm')
+  onModuleInit(client: Socket, ...args: any[]) {
+    console.log('dcm');
     // console.log(client)
   }
 
-
   handleConnection(client: Socket, ...args: any[]) {
-    console.log(client)
+    console.log('zz');
+    console.log(client);
   }
-
-
 
   @SubscribeMessage('createRoom')
   handleCreateRoom(@MessageBody() body, @ConnectedSocket() client: Socket): void {
     console.log(body);
-    // room='1'
-    // client.join(room);
-    // client.emit('roomCreated', room);
+    //create room
+    // user join room
   }
 
   // @SubscribeMessage('createRoom')
