@@ -6,23 +6,29 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { OnGatewayConnection } from '@nestjs/websockets';
 
 @WebSocketGateway()
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  onModuleInit() {}
+  onModuleInit(client:Socket, ...args: any[]) {
+    console.log('dcm')
+    // console.log(client)
+  }
 
-  // @SubscribeMessage('message1')
-  // handleMessage(client: any, payload: any): string {
-  //   this.server.emit('a',{a:'b'})
-  //   return 'Hello world!';
-  // }
+
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log(client)
+  }
+
+
 
   @SubscribeMessage('createRoom')
   handleCreateRoom(@MessageBody() body, @ConnectedSocket() client: Socket): void {
-    console.log(body)
+    console.log(body);
+    // room='1'
     // client.join(room);
     // client.emit('roomCreated', room);
   }
@@ -37,7 +43,6 @@ export class ChatGateway {
   @SubscribeMessage('joinRoom')
   handleJoinRoom(client: Socket, room: string): void {
     room = '1';
-
     client.join(room);
     client.emit('roomJoined', room);
   }
